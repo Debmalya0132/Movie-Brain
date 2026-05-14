@@ -1,172 +1,88 @@
 # 🧠 Movie Brain - Your Personal Film Network
 
-A unique 3D interactive movie and TV show recommendation system that visualizes your watched content as a living neural network. Unlike Netflix or Letterboxd, Movie Brain represents your viewing history as interconnected nodes in 3D space, creating a beautiful brain-like structure that evolves as you add more content.
+A unique 3D interactive movie and TV show recommendation system that visualizes your watched content as a living neural network. **Movie Brain** represents your viewing history as interconnected nodes in 3D space, creating a beautiful brain-like structure that evolves as you add more content. 
+
+With the new AI-powered Taste Profile generator and Multi-View engines, it's never been easier to analyze your cinematic taste, share your brain with friends, and visualize your cinematic journey.
 
 ## ✨ Features
 
-- **3D Neural Network Visualization**: Your movies and shows appear as glowing nodes connected by synaptic lines based on shared genres, creating a unique brain-like structure
-- **Interactive Exploration**: Click on any node to see details, get similar recommendations, and explore your taste patterns
-- **Smart Recommendations**: Get top 3 similar movies/shows based on TMDB's recommendation engine
-- **Real-time Search**: Search and add content from TMDB's massive database
-- **Persistent Storage**: Your watched list is saved locally in your browser
-- **Beautiful UI**: Glassmorphic design with smooth animations and gradients
+### 🌌 The Multi-View 3D Visualization System
+Explore your taste in 4 distinct layout modes:
+- **Brain View 🧠**: Your movies and shows appear as a neural network. Nodes are connected by glowing synaptic links based on shared genres.
+- **Galaxy View 🌌**: A breathtaking solar system where genres act as planetary centers, and your movies orbit around them with dynamic gravitational animations.
+- **Timeline View ⏰**: A chronological visualization of your viewing history, from the first movie you ever added to the most recent. Includes a rapid-fire playback scrubber to watch your taste evolve.
+- **Constellation View ✨**: Uncovers the hidden constellations in your taste using a Nearest-Neighbor thematic clustering algorithm. 
+
+### 🤖 AI Taste Profiling & Chat
+- **Deep Analysis**: Uses the Google Gemini AI to analyze your viewing habits, generating a highly personalized "Taste Profile" including an Archetype, Personality description, Hidden Patterns, Seasonal Insights, and Blind Spots with custom recommendations.
+- **Interactive Chat**: Have a 1-on-1 conversation with an AI cinephile about your specific movie list to ask for tailored recommendations or insights.
+- **Downloadable Profile Cards**: Renders your taste profile into a gorgeous, shareable "Spotify Wrapped"-style image card that you can download directly to your device.
+
+### 🌐 Cloud Sync & Social Sharing
+- **Firebase Integration**: Your brain is instantly synced to the cloud.
+- **Shareable Links**: Generate a unique link or QR Code to share your brain with friends.
+- **Brain Comparison**: Overlay a friend's shared brain onto your own to find the cinematic overlaps between your tastes.
+
+### 🔍 Discovery
+- **Real-time Search**: Search and add content from TMDB's massive database.
+- **Interactive Exploration**: Click on any node to see details, poster art, and an overview.
 
 ## 🚀 Setup Instructions
 
-### Step 1: Get a TMDB API Key (Free)
+### Step 1: API Keys
+You will need API keys for TMDB, Google Gemini, and a Firebase project.
+1. **TMDB**: Get a free API key from [TheMovieDB](https://www.themoviedb.org/). Paste it into `app.js` (`TMDB_API_KEY`).
+2. **Gemini AI**: Get a free API key from [Google AI Studio](https://aistudio.google.com/app/apikey). Paste it into `taste.js` (`GEMINI_API_KEY`).
+3. **Firebase**: Create a project in [Firebase](https://console.firebase.google.com/). Add your config credentials to `firebase-config.js`.
 
-1. Go to [https://www.themoviedb.org/](https://www.themoviedb.org/)
-2. Create a free account (takes 1 minute)
-3. Go to Settings → API
-4. Request an API key (choose "Developer" option)
-5. Fill out the form (you can use any website URL, even a personal one)
-6. You'll receive your API key instantly (looks like: `a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6`)
-
-### Step 2: Add Your API Key
-
-1. Open the `app.js` file in any text editor
-2. Find this line at the top (line 2):
-   ```javascript
-   const TMDB_API_KEY = 'YOUR_API_KEY_HERE';
-   ```
-3. Replace `YOUR_API_KEY_HERE` with your actual API key:
-   ```javascript
-   const TMDB_API_KEY = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
-   ```
-4. Save the file
-
-### Step 3: Run the Application
-
-You have several options:
-
-#### Option A: Simple Double-Click (Easiest)
-1. Just double-click `index.html` 
-2. It should open in your default browser
-3. Start adding movies!
-
-#### Option B: Using Python (Recommended for best results)
+### Step 2: Run the Application
 1. Open Terminal/Command Prompt
-2. Navigate to the movie-brain folder:
+2. Navigate to the `movie-brain` folder:
    ```bash
    cd path/to/movie-brain
    ```
-3. Run this command:
+3. Run a local python server:
    ```bash
-   python -m http.server 8000
-   ```
-   Or if you have Python 2:
-   ```bash
-   python -m SimpleHTTPServer 8000
+   python3 -m http.server 8000
    ```
 4. Open your browser and go to: `http://localhost:8000`
 
-#### Option C: Using VS Code Live Server
-1. Install the "Live Server" extension in VS Code
-2. Right-click on `index.html`
-3. Select "Open with Live Server"
-
-#### Option D: Using Node.js
-1. Install http-server globally:
-   ```bash
-   npm install -g http-server
-   ```
-2. Navigate to the movie-brain folder
-3. Run:
-   ```bash
-   http-server
-   ```
-4. Open the URL shown in terminal (usually `http://localhost:8080`)
-
 ## 📖 How to Use
 
-1. **Search for Content**: Use the search bar in the top-left to find movies or TV shows
-2. **Add to Your Brain**: Click on search results to add them to your visualization
-3. **Explore**: The 3D brain will slowly rotate. Click and drag to navigate
-4. **Click Nodes**: Click any glowing sphere to see details about that movie/show
-5. **Get Recommendations**: Click the "Get Similar Recommendations" button to find similar content
-6. **Add Recommendations**: Click on recommended items to add them to your brain
-7. **Watch It Grow**: As you add more content, connections form between similar items, creating clusters of related movies/shows
-
-## 🎨 Understanding the Visualization
-
-- **Nodes (Spheres)**: Each represents a movie or TV show
-- **Colors**: Different colors represent different primary genres
-- **Lines (Connections)**: Link movies/shows with shared genres
-- **Thicker Lines**: Indicate stronger similarities (more shared genres)
-- **Clusters**: Similar content naturally groups together
-- **Pulsing Effect**: Nodes gently pulse to indicate they're interactive
-
-## 🔧 Troubleshooting
-
-### "No results found" when searching
-- Make sure you've added your TMDB API key correctly in `app.js`
-- Check that your API key is valid at themoviedb.org
-
-### Page won't load properly
-- Make sure you're running it through a local server (Options B, C, or D above)
-- Check the browser console (F12) for errors
-
-### 3D visualization is blank
-- Try adding some movies/shows using the search
-- Make sure WebGL is enabled in your browser
-- Try a different browser (Chrome, Firefox, or Edge recommended)
-
-### API key not working
-- Wait a few minutes - new TMDB API keys sometimes take time to activate
-- Make sure there are no extra spaces or quotes around your key
-- Verify your API key at themoviedb.org/settings/api
-
-## 🌟 Tips for Best Experience
-
-- **Add at least 10-15 movies/shows** to see the brain structure form
-- **Mix different genres** to create interesting connection patterns
-- **Use the recommendations feature** to discover content similar to what you love
-- **Your data is saved locally** - it persists between sessions
-- **Different genres get different colors** - watch for natural clustering
-- **Zoom and rotate** by clicking and dragging to explore from different angles
+1. **Build Your Brain**: Use the search bar in the top-left to find movies or TV shows and add them.
+2. **Change Views**: Click the tabs at the top (Brain, Galaxy, Timeline, Constellation) to morph the 3D scene into different structures.
+3. **Scrub Timeline**: In Timeline view, use the scrubber at the bottom to watch your brain grow sequentially.
+4. **AI Taste Profile**: Click the "AI Taste Profile" button in the top right to generate a deep-dive analysis of your habits, chat with the AI, and download your profile card.
+5. **Share**: Click "Share Brain" to generate a link to send to your friends.
 
 ## 💾 File Structure
 
-```
+```text
 movie-brain/
-├── index.html      # Main HTML structure
-├── styles.css      # All styling and animations
-├── app.js          # Core application logic, 3D visualization, API calls
-└── README.md       # This file
+├── index.html               # Main application layout
+├── styles.css               # Glassmorphic UI styling
+├── app.js                   # Core 3D engine, TMDB fetching
+├── views.js                 # Multi-view orchestrator
+├── galaxy-view.js           # Orbital mechanics layout
+├── timeline-view.js         # Chronological distribution layout
+├── constellation-view.js    # Nearest-neighbor clustering algorithm
+├── taste.js                 # AI integration (Gemini), Chat, & Canvas downloads
+├── share.js                 # Firebase saving & share link generation
+├── compare.js               # Cross-referencing shared brains
+├── firebase-config.js       # Database credentials
+└── README.md                # Documentation
 ```
 
 ## 🎯 Technical Details
 
-- **Frontend**: Pure HTML, CSS, JavaScript (no build tools needed)
+- **Frontend**: Vanilla HTML/CSS/JS
 - **3D Graphics**: Three.js (r128)
-- **Data Source**: TMDB (The Movie Database) API
-- **Storage**: Browser localStorage
-- **No Backend Required**: Everything runs in your browser
-
-## 🐛 Known Limitations
-
-- Requires internet connection for searching and recommendations
-- Limited to TMDB's database (which is huge, but not everything is there)
-- 3D visualization may be slow with 200+ items on older devices
-- Recommendations are based on TMDB's algorithm, not your specific taste
+- **AI Inference**: Google Gemini API
+- **Data Source**: TMDB API
+- **Backend/Storage**: Firebase Realtime Database & LocalStorage
 
 ## 🔐 Privacy
+Your API keys are stored in the client files, making this a strictly local/personal application deployment. Your viewing history is stored in your own Firebase instance and browser LocalStorage.
 
-- All data is stored locally in your browser
-- No data is sent to any server except TMDB for searching
-- Your API key is only stored in the code file on your computer
-- No tracking, no analytics, no data collection
-
-## 🎉 Have Fun!
-
-Start building your movie brain and discover how your taste in films and shows forms beautiful patterns in 3D space!
-
----
-
-**Questions or Issues?**
-- Check the console (F12 → Console) for error messages
-- Make sure your TMDB API key is valid
-- Try a different browser if things aren't working
-- Clear your browser cache and try again
-
-**Pro Tip**: The brain looks coolest when you have a diverse mix of genres. Try adding some action movies, some comedies, dramas, and sci-fi to see distinct clusters form!
+## 🎉 Enjoy the Journey!
+Keep adding movies and watch your personalized galaxy grow!
