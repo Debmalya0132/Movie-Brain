@@ -1,6 +1,4 @@
 // Configuration
-const TMDB_API_KEY = 'd8d9bc1522f997449cad6c2d340ab399'; // You'll need to get this from TMDB
-const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
 
 // State
@@ -227,9 +225,7 @@ async function handleSearch(e) {
     }
 
     try {
-        const response = await fetch(
-            `${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=1`
-        );
+        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
         const data = await response.json();
 
         // Filter only movies and TV shows
@@ -312,9 +308,7 @@ async function toggleWatchedContent(e) {
 }
 
 async function fetchContentDetails(id, type) {
-    const response = await fetch(
-        `${TMDB_BASE_URL}/${type}/${id}?api_key=${TMDB_API_KEY}&append_to_response=credits`
-    );
+    const response = await fetch(`/api/details?id=${id}&type=${type}`);
     const data = await response.json();
 
     return {
@@ -646,9 +640,7 @@ async function fetchRecommendations() {
     recsContainer.classList.remove('hidden');
 
     try {
-        const response = await fetch(
-            `${TMDB_BASE_URL}/${selectedNode.type}/${selectedNode.id}/recommendations?api_key=${TMDB_API_KEY}&page=1`
-        );
+        const response = await fetch(`/api/recommendations?id=${selectedNode.id}&type=${selectedNode.type}`);
         const data = await response.json();
 
         const recommendations = data.results.slice(0, 3);

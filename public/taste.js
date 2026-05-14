@@ -5,9 +5,6 @@
  */
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const GEMINI_API_KEY  = 'AIzaSyB4nxJ2qjEMaLFvnV044ANn-s-ZH1hwJr4';
-const GEMINI_MODEL    = 'gemini-2.5-flash';
-const GEMINI_API_URL  = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 const MIN_CONTENT     = 5;  // min items before analysis
 const PROFILE_KEY     = 'movieBrainProfile';  // localStorage key for persisted profile
 
@@ -18,7 +15,6 @@ let profileContext = ''; // built after generation, reused in chat
 // ── Boot ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     initDrawer();
-    initApiKeyUI();
     initGenerateBtn();
     initChat();
 });
@@ -69,21 +65,18 @@ function closeDrawer() {
     }, 300);
 }
 
-// ── Refresh UI state based on key + content count ─────────────────────────────
 function refreshDrawerState() {
-    const key         = getApiKey();
     const count       = getWatchedCount();
-    const keyBanner   = document.getElementById('api-key-banner');
     const notEnough   = document.getElementById('not-enough-banner');
     const generateBtn = document.getElementById('generate-profile-btn');
     const staleBanner = document.getElementById('stale-profile-banner');
+    const keyBanner   = document.getElementById('api-key-banner'); // hidden permanently
 
-    keyBanner.classList.add('hidden');
+    if (keyBanner) keyBanner.classList.add('hidden');
     notEnough.classList.add('hidden');
     generateBtn.classList.add('hidden');
     if (staleBanner) staleBanner.classList.add('hidden');
 
-    if (!key) { keyBanner.classList.remove('hidden'); return; }
     if (count < MIN_CONTENT) { notEnough.classList.remove('hidden'); return; }
 
     generateBtn.classList.remove('hidden');
@@ -98,44 +91,7 @@ function refreshDrawerState() {
     } catch (e) {}
 }
 
-// ── API Key management ────────────────────────────────────────────────────────
-function initApiKeyUI() {
-    const saveBtn = document.getElementById('save-api-key');
-    const input   = document.getElementById('api-key-input');
-
-    // Pre-fill if exists
-    const existing = getApiKey();
-    if (existing) input.value = existing;
-
-    saveBtn.addEventListener('click', () => {
-        const val = input.value.trim();
-        if (!val.startsWith('AIza')) {
-            showKeyError('Key should start with AIza…');
-            return;
-        }
-        localStorage.setItem('geminiApiKey', val);
-        refreshDrawerState();
-    });
-
-    input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') saveBtn.click();
-    });
-}
-
-function getApiKey() {
-    // Use localStorage key if set, otherwise fall back to the hardcoded default
-    return localStorage.getItem('geminiApiKey') || GEMINI_API_KEY;
-}
-
-function showKeyError(msg) {
-    const input = document.getElementById('api-key-input');
-    input.style.borderColor = 'rgba(255,80,80,0.6)';
-    input.placeholder = msg;
-    setTimeout(() => {
-        input.style.borderColor = '';
-        input.placeholder = 'AIza…';
-    }, 2500);
-}
+// (API Key UI removed since we use backend endpoints now)
 
 // ── Get watched content (from app.js global) ──────────────────────────────────
 function getWatchedContent() {
@@ -747,43 +703,23 @@ function appendChatBubble(role, text) {
     messages.scrollTop = messages.scrollHeight;
 }
 
-// ── Gemini API call (free tier) ───────────────────────────────────────────────
+// ── Backend API call ───────────────────────────────────────────────
 async function callGemini(fullPrompt, isJson = false) {
-    const key = getApiKey();
-    if (!key) throw new Error('No API key set.');
-
-    const config = {
-        maxOutputTokens: 8192,
-        temperature: 0.8
-    };
-    if (isJson) {
-        config.responseMimeType = "application/json";
-        config.thinkingConfig = { thinkingBudget: 0 }; // disable thinking to save tokens
-    }
-
-    const body = {
-        contents: [{ parts: [{ text: fullPrompt }] }],
-        generationConfig: config
-    };
-
-    const res = await fetch(`${GEMINI_API_URL}?key=${key}`, {
+    const endpoint = isJson ? '/api/ai/profile' : '/api/ai/chat';
+    
+    const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify({ prompt: fullPrompt })
     });
 
     if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        const msg = err?.error?.message || `HTTP ${res.status}`;
-        if (res.status === 400 || res.status === 403) {
-            localStorage.removeItem('geminiApiKey');
-            refreshDrawerState();
-        }
-        throw new Error(msg);
+        throw new Error(err.error || `HTTP ${res.status}`);
     }
 
     const data = await res.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+    return data.text;
 }
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
