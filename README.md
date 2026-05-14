@@ -19,7 +19,7 @@ The application supports four distinct layout modes for data exploration:
 - **Exportable Metrics**: Renders the generated profile into a formatted, high-resolution image card via an HTML Canvas engine for direct download and distribution.
 
 ### Cloud Synchronization & Collaboration
-- **Firebase Integration**: Real-time cloud synchronization of the user's dataset.
+- **Firebase Integration**: Real-time cloud synchronization of the user's dataset via Firebase.
 - **Shareable Instances**: Generates unique URLs and QR codes for granting read-only access to a specific database instance.
 - **Cross-Referencing**: Allows users to overlay an external database onto their local instance to visually compute and display cinematic overlaps.
 
@@ -30,48 +30,66 @@ The application supports four distinct layout modes for data exploration:
 ## Setup Instructions
 
 ### Step 1: API Configuration
-The application requires three API keys to function fully:
-1. **TMDB**: Obtain an API key from [TheMovieDB](https://www.themoviedb.org/). Insert the key into `app.js` (`TMDB_API_KEY`).
-2. **Google Gemini**: Obtain an API key from [Google AI Studio](https://aistudio.google.com/app/apikey). Insert the key into `taste.js` (`GEMINI_API_KEY`).
-3. **Firebase**: Create a project in [Firebase](https://console.firebase.google.com/). Add the configuration credentials to `firebase-config.js`.
+The application requires three API keys to function fully. For security, these are managed via server-side environment variables:
 
-### Step 2: Running the Application
-1. Open a terminal instance.
-2. Navigate to the project directory:
+1. **TMDB_API_KEY**: Obtain from [TheMovieDB](https://www.themoviedb.org/).
+2. **GEMINI_API_KEY**: Obtain from [Google AI Studio](https://aistudio.google.com/app/apikey).
+3. **Firebase Credentials**: Add your Firebase configuration to `public/firebase-config.js`.
+
+### Step 2: Local Development
+1. Clone the repository and install dependencies:
    ```bash
-   cd path/to/movie-brain
+   npm install
    ```
-3. Initialize a local web server (e.g., using Python):
+2. Create a `.env` file in the root directory:
+   ```env
+   TMDB_API_KEY=your_tmdb_key_here
+   GEMINI_API_KEY=your_gemini_key_here
+   ```
+3. Start the server:
    ```bash
-   python3 -m http.server 8000
+   npm start
    ```
-4. Access the application via a web browser at: `http://localhost:8000`
+4. Access the application at `http://localhost:3000`.
+
+### Step 3: Deployment (Render)
+1. Push the code to GitHub.
+2. In the Render Dashboard, create a new **Blueprint** and connect your repository.
+3. In the service settings, go to **Environment** and add:
+   - `TMDB_API_KEY`
+   - `GEMINI_API_KEY`
+4. Render will automatically deploy the Node.js web service.
 
 ## Architecture
 
 ```text
 movie-brain/
-├── index.html               # Main application DOM structure
-├── styles.css               # UI styling and layout rules
-├── app.js                   # Core 3D engine and TMDB API integration
-├── views.js                 # Multi-view orchestration and state management
-├── galaxy-view.js           # Orbital mechanics mathematical layout
-├── timeline-view.js         # Chronological distribution layout
-├── constellation-view.js    # Nearest-neighbor clustering logic
-├── taste.js                 # AI integration, Chat logic, & Canvas rendering
-├── share.js                 # Firebase synchronization & URL generation
-├── compare.js               # Cross-referencing logic for shared instances
-├── firebase-config.js       # Database connection parameters
+├── server.js                # Node.js/Express backend (API Proxy)
+├── package.json             # Project dependencies and scripts
+├── render.yaml              # Render deployment configuration
+├── public/                  # Frontend static assets
+│   ├── index.html           # Main application DOM structure
+│   ├── styles.css           # UI styling and layout rules
+│   ├── app.js               # Core 3D engine and API integration
+│   ├── views.js             # Multi-view orchestration
+│   ├── galaxy-view.js       # Orbital mechanics layout
+│   ├── timeline-view.js     # Chronological distribution layout
+│   ├── constellation-view.js# Clustering logic
+│   ├── taste.js             # AI integration and profile rendering
+│   ├── share.js             # Firebase synchronization
+│   ├── compare.js           # Cross-referencing logic
+│   └── firebase-config.js   # Firebase configuration
 └── README.md                # Project documentation
 ```
 
 ## Technical Specifications
 
-- **Frontend Architecture**: Vanilla HTML5, CSS3, JavaScript (ES6+)
+- **Backend**: Node.js, Express
+- **Frontend**: Vanilla HTML5, CSS3, JavaScript (ES6+)
 - **3D Graphics Engine**: Three.js (r128)
-- **AI Inference API**: Google Gemini
-- **Data Provider API**: The Movie Database (TMDB)
-- **Backend Storage**: Firebase Realtime Database & LocalStorage
+- **AI Inference**: Google Gemini SDK
+- **Data Provider**: TMDB API
+- **Database**: Firebase Realtime Database
 
-## Privacy & Data Handling
-All API keys are configured client-side, enabling a localized deployment model. User viewing history and metadata are securely stored within the designated Firebase instance and the browser's native LocalStorage environment.
+## Privacy & Security
+API keys are handled exclusively on the server-side and are never exposed to the client. User viewing history is stored in the designated Firebase instance and the browser's LocalStorage.
