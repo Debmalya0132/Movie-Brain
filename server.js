@@ -78,30 +78,39 @@ app.get('/api/recommendations', async (req, res) => {
 });
 
 // ── Gemini AI Endpoints ──────────────────────────────────────────────────────
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 app.post('/api/ai/profile', async (req, res) => {
     try {
         const { prompt } = req.body;
+        if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not defined in environment variables');
+
+        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
         res.json({ text: responseText });
     } catch (error) {
-        console.error("Gemini Error:", error);
-        res.status(500).json({ error: 'Failed to generate AI profile' });
+        console.error("Gemini Proxy Error (Profile):", error);
+        res.status(500).json({ error: error.message || 'Failed to generate AI profile' });
     }
 });
 
 app.post('/api/ai/chat', async (req, res) => {
     try {
         const { prompt } = req.body;
+        if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not defined');
+
+        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
         res.json({ text: responseText });
     } catch (error) {
-        console.error("Gemini Error:", error);
-        res.status(500).json({ error: 'Failed to generate AI chat response' });
+        console.error("Gemini Proxy Error (Chat):", error);
+        res.status(500).json({ error: error.message || 'Failed to generate AI chat response' });
     }
 });
 
