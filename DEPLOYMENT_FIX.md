@@ -6,15 +6,15 @@
 Your code was using the old Gemini model name `gemini-pro` which was deprecated. Google changed their model names, causing the 404 error.
 
 ### **The Solution:**
-Updated both AI endpoints to use the new model: `gemini-1.5-flash`
+Updated both AI endpoints to use the new model: `gemini-2.5-flash`
 
 ---
 
 ## 📦 Files Changed
 
 ### 1. **server.js**
-- Line 89: Changed `gemini-pro` → `gemini-1.5-flash` (AI Profile endpoint)
-- Line 106: Changed `gemini-pro` → `gemini-1.5-flash` (AI Chat endpoint)
+- Line 89: Changed `gemini-pro` → `gemini-2.5-flash` (AI Profile endpoint)
+- Line 106: Changed `gemini-pro` → `gemini-2.5-flash` (AI Chat endpoint)
 
 ### 2. **package.json**
 - Updated `@google/generative-ai` from `^0.11.1` → `^0.21.0` (latest version)
@@ -29,7 +29,7 @@ Updated both AI endpoints to use the new model: `gemini-1.5-flash`
 2. **Commit and push to GitHub:**
    ```bash
    git add .
-   git commit -m "Fix: Update Gemini model to gemini-1.5-flash"
+   git commit -m "Fix: Update Gemini model to gemini-2.5-flash"
    git push origin main
    ```
 3. **Render will auto-deploy** (takes ~2-3 minutes)
@@ -53,8 +53,8 @@ If auto-deploy doesn't trigger:
 Make sure these are set in your Render dashboard:
 
 **Environment → Environment Variables:**
-- `TMDB_API_KEY` = `d8d9bc1522f997449cad6c2d340ab399`
-- `GEMINI_API_KEY` = `AIzaSyB4nxJ2qjEMaLFvnV044ANn-s-ZH1hwJr4`
+- `TMDB_API_KEY` = `(your_tmdb_api_key)`
+- `GEMINI_API_KEY` = `(your_new_gemini_api_key)`
 
 (These should already be there from your previous setup)
 
@@ -98,19 +98,19 @@ const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 ### New Code (Working):
 ```javascript
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 ```
 
 ### Why This Fixes It:
 - Google deprecated `gemini-pro` 
-- New model names: `gemini-1.5-flash`, `gemini-1.5-pro`, `gemini-2.0-flash-exp`
-- `gemini-1.5-flash` is faster and cheaper (perfect for your use case)
+- New model names: `gemini-2.5-flash`, `gemini-1.5-pro`, `gemini-2.0-flash-exp`
+- `gemini-2.5-flash` is faster and cheaper (perfect for your use case)
 
 ---
 
 ## 🎯 Available Gemini Models (For Future Reference)
 
-- **gemini-1.5-flash** ⚡ Fast, efficient (recommended for your app)
+- **gemini-2.5-flash** ⚡ Fast, efficient (recommended for your app)
 - **gemini-1.5-pro** 🧠 More powerful, slower
 - **gemini-2.0-flash-exp** 🔬 Experimental, latest features
 
@@ -130,7 +130,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 ### Want to Test Multiple Models?
 Add a query parameter to switch models dynamically:
 ```javascript
-const modelName = req.query.model || "gemini-1.5-flash";
+const modelName = req.query.model || "gemini-2.5-flash";
 const model = genAI.getGenerativeModel({ model: modelName });
 ```
 
@@ -182,5 +182,5 @@ All powered by Google's latest Gemini 1.5 Flash model! 🚀
 ---
 
 **Last Updated:** May 14, 2026
-**Model Used:** gemini-1.5-flash
+**Model Used:** gemini-2.5-flash
 **Package Version:** @google/generative-ai ^0.21.0
