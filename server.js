@@ -114,6 +114,19 @@ app.post('/api/ai/chat', async (req, res) => {
     }
 });
 
+app.get('/api/ai/debug', async (req, res) => {
+    try {
+        if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not defined');
+        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+        // The listModels method is the standard way to check availability
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}`);
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Catch-all route to serve the SPA
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
