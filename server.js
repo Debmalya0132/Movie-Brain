@@ -20,33 +20,60 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 app.get('/api/search', async (req, res) => {
     try {
         const query = req.query.q;
+        if (!TMDB_API_KEY) throw new Error('TMDB_API_KEY is not defined in environment variables');
+        
         const response = await fetch(`${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=1`);
         const data = await response.json();
+        
+        if (!response.ok) {
+            console.error('TMDB API Error (Search):', data);
+            return res.status(response.status).json(data);
+        }
+        
         res.json(data);
     } catch (error) {
-        res.status(500).json({ error: 'TMDB search failed' });
+        console.error('Search Proxy Error:', error.message);
+        res.status(500).json({ error: error.message });
     }
 });
 
 app.get('/api/details', async (req, res) => {
     try {
         const { id, type } = req.query;
+        if (!TMDB_API_KEY) throw new Error('TMDB_API_KEY is not defined');
+
         const response = await fetch(`${TMDB_BASE_URL}/${type}/${id}?api_key=${TMDB_API_KEY}&append_to_response=credits`);
         const data = await response.json();
+
+        if (!response.ok) {
+            console.error('TMDB API Error (Details):', data);
+            return res.status(response.status).json(data);
+        }
+
         res.json(data);
     } catch (error) {
-        res.status(500).json({ error: 'TMDB details failed' });
+        console.error('Details Proxy Error:', error.message);
+        res.status(500).json({ error: error.message });
     }
 });
 
 app.get('/api/recommendations', async (req, res) => {
     try {
         const { id, type } = req.query;
+        if (!TMDB_API_KEY) throw new Error('TMDB_API_KEY is not defined');
+
         const response = await fetch(`${TMDB_BASE_URL}/${type}/${id}/recommendations?api_key=${TMDB_API_KEY}`);
         const data = await response.json();
+
+        if (!response.ok) {
+            console.error('TMDB API Error (Recs):', data);
+            return res.status(response.status).json(data);
+        }
+
         res.json(data);
     } catch (error) {
-        res.status(500).json({ error: 'TMDB recommendations failed' });
+        console.error('Recs Proxy Error:', error.message);
+        res.status(500).json({ error: error.message });
     }
 });
 
