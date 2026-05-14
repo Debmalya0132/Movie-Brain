@@ -86,7 +86,7 @@ app.post('/api/ai/profile', async (req, res) => {
         if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not defined in environment variables');
 
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
@@ -103,7 +103,7 @@ app.post('/api/ai/chat', async (req, res) => {
         if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not defined');
 
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
