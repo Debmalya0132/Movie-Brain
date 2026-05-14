@@ -127,7 +127,12 @@ app.get('/api/ai/debug', async (req, res) => {
     }
 });
 
-// Catch-all route to serve the SPA
+// Serve dashboard cleanly on /dashboard
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// Catch-all route for any other URL to serve the landing page
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Brain — Your Personal Film Network</title>
+    <meta name="description"
+        content="Visualize your movie and TV taste as a living 3D neural network. AI-powered taste profiling included.">
+    <link rel="stylesheet" href="styles.css?v=11">
+</head>
+
+<body>
+    <div id="app">
+
+        <!-- ── Header ─────────────────────────────────────── -->
+        <header>
+            <div class="header-left">
+                <h1>Movie Brain</h1>
+                <p class="tagline">Your viewing history as a living neural network</p>
+            </div>
+
+            <!-- ── View Switcher ── -->
+            <div class="view-switcher">
+                <button class="view-tab active" data-view="brain">Brain</button>
+                <button class="view-tab" data-view="galaxy">Galaxy</button>
+                <button class="view-tab" data-view="timeline">Timeline</button>
+                <button class="view-tab" data-view="constellation">Constellation</button>
+            </div>
+
+            <div class="header-right">
+                <button id="compare-brain-btn" class="header-btn" aria-label="Compare Brains">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 3h5v5" />
+                        <path d="M4 20L21 3" />
+                        <path d="M21 16v5h-5" />
+                        <path d="M15 15l6 6" />
+                        <path d="M4 4l5 5" />
+                    </svg>
+                    Compare Brains
+                </button>
+                <button id="download-brain-btn" class="header-btn" aria-label="Download brain as image">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Save Brain
+                </button>
+                <button id="share-brain-btn" class="header-btn header-btn-accent" aria-label="Share brain">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                    Share Brain
+                </button>
+                <button id="open-taste-profile" class="header-btn" aria-label="Open AI Taste Profile">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                    </svg>
+                    AI Taste Profile
+                </button>
+            </div>
+        </header>
+
+        <!-- ── View-mode banner (shown when loading a shared brain) ── -->
+        <div id="viewer-banner" class="viewer-banner hidden">
+            <span class="viewer-msg"></span>
+            <a href="./" class="viewer-back">Build your own &rarr;</a>
+        </div>
+
+        <!-- ── Search Panel ───────────────────────────────── -->
+        <div id="search-panel" class="panel">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search for movies or TV shows…" autocomplete="off">
+                <div id="search-results"></div>
+            </div>
+        </div>
+
+        <!-- ── 3D Canvas ──────────────────────────────────── -->
+        <div id="canvas-container">
+            <canvas id="brain-canvas"></canvas>
+
+            <!-- Node flash card -->
+            <div id="info-overlay" class="hidden">
+                <div class="info-content">
+                    <img id="info-poster" src="" alt="Poster">
+                    <div class="info-text">
+                        <h2 id="info-title"></h2>
+                        <p id="info-genre"></p>
+                        <p id="info-year"></p>
+                        <p id="info-overview"></p>
+                    </div>
+                    <div class="card-btns">
+                        <button id="expand-card" class="icon-btn" aria-label="Expand" title="Expand">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round">
+                                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                            </svg>
+                        </button>
+                        <button id="close-info" class="icon-btn" aria-label="Close">&#x2715;</button>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button id="get-recommendations" class="primary-btn">Similar Titles</button>
+                    <div id="recommendations-container" class="hidden">
+                        <h3>Similar</h3>
+                        <div id="recommendations-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Stats Panel ────────────────────────────────── -->
+        <div id="stats-panel">
+            <div class="stat">
+                <span class="stat-value" id="movie-count">0</span>
+                <span class="stat-label">Movies</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="show-count">0</span>
+                <span class="stat-label">TV Shows</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="connection-count">0</span>
+                <span class="stat-label">Connections</span>
+            </div>
+        </div>
+
+    </div><!-- /#app -->
+
+    <!-- ══════════════════════════════════════════════════════
+         AI TASTE PROFILE DRAWER
+    ══════════════════════════════════════════════════════ -->
+    <div id="taste-backdrop" class="taste-backdrop hidden"></div>
+
+    <aside id="taste-drawer" class="taste-drawer hidden" aria-label="AI Taste Profile">
+
+        <!-- Drawer header -->
+        <div class="drawer-header">
+            <div>
+                <h2 class="drawer-title">AI Taste Profile</h2>
+                <p class="drawer-sub">Powered by Gemini 2.5 Flash · Free</p>
+            </div>
+            <button id="close-taste" class="close-btn" aria-label="Close">&times;</button>
+        </div>
+
+
+
+        <!-- Not enough content warning -->
+        <div id="not-enough-banner" class="not-enough-banner hidden">
+            <p>Add at least <strong>5 movies or shows</strong> to your brain first, then come back for your profile.</p>
+        </div>
+
+        <!-- Generate button -->
+        <button id="generate-profile-btn" class="generate-btn hidden">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+            Analyze My Taste
+        </button>
+
+        <!-- Stale profile nudge (shown when 5+ new movies since last analysis) -->
+        <div id="stale-profile-banner" class="stale-banner hidden">
+            You've added <strong><span class="stale-count">0</span> new titles</strong> since your last analysis.
+            <button onclick="document.getElementById('generate-profile-btn').click()"
+                class="stale-reanalyze">Re-analyze</button>
+        </div>
+
+        <!-- ── Profile sections (injected by JS) ───────── -->
+        <div id="profile-sections"></div>
+
+        <!-- ── Chat ─────────────────────────────────────── -->
+        <div id="chat-section" class="chat-section hidden">
+            <div class="chat-divider">
+                <span>Chat about your taste</span>
+            </div>
+            <div id="chat-messages" class="chat-messages" role="log" aria-live="polite"></div>
+            <div class="chat-input-row">
+                <input type="text" id="chat-input" placeholder="Ask anything about your taste…" autocomplete="off">
+                <button id="chat-send" class="send-btn" aria-label="Send">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13" />
+                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- ══════════════════════════════════════════════════════
+         SHARE MODAL
+    ══════════════════════════════════════════════════════ -->
+    <div id="share-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Share Brain">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title">Share Your Brain</h2>
+                    <p class="modal-sub">Anyone with the link can view your neural map</p>
+                </div>
+                <button id="share-modal-close" class="icon-btn" aria-label="Close">&times;</button>
+            </div>
+
+            <!-- Idle state -->
+            <div id="share-idle">
+                <div class="share-preview">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)"
+                        stroke-width="1.5" stroke-linecap="round">
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                    <p class="share-preview-text">Generate a unique link to share your brain.<br>Your taste map will be
+                        viewable by anyone.</p>
+                </div>
+                <button id="generate-link-btn" class="primary-btn">Generate Share Link</button>
+            </div>
+
+            <!-- Loading state -->
+            <div id="share-loading" class="hidden share-loading">
+                <div class="share-spinner"></div>
+                <p>Saving your brain to the cloud&hellip;</p>
+            </div>
+
+            <!-- Done state -->
+            <div id="share-done" class="hidden">
+                <div class="share-link-row">
+                    <input type="text" id="share-link-input" readonly class="share-link-input">
+                    <button id="copy-link-btn" class="pill-btn">Copy</button>
+                </div>
+                <div class="share-qr-wrap">
+                    <img id="share-qr" src="" alt="QR Code" class="share-qr">
+                    <p class="share-qr-hint">Scan to open on mobile</p>
+                </div>
+                <p class="share-note">Link is read-only. Viewers cannot edit your brain.</p>
+            </div>
+
+            <!-- Error state -->
+            <div id="share-error" class="hidden">
+                <p class="share-error-msg"></p>
+                <button onclick="setShareModalState('idle')" class="pill-btn" style="margin-top:12px">Try again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         TIMELINE SCRUBBER UI (Bottom Center)
+    ══════════════════════════════════════════════════════ -->
+    <div id="timeline-ui" class="view-ui-panel hidden">
+        <div class="timeline-controls">
+            <button id="timeline-play-btn" class="icon-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+            </button>
+            <input type="range" id="timeline-slider" min="1990" max="2026" value="2026">
+            <span id="timeline-year-display" class="timeline-year">2026</span>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         COMPARE MODAL
+    ══════════════════════════════════════════════════════ -->
+    <div id="compare-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Compare Brains">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title">Compare Brains</h2>
+                    <p class="modal-sub">Paste a friend's share link to compare your taste.</p>
+                </div>
+                <button id="compare-modal-close" class="icon-btn" aria-label="Close">&times;</button>
+            </div>
+
+            <div id="compare-idle">
+                <input type="text" id="compare-link-input" class="share-link-input"
+                    placeholder="e.g. moviebrain.com/?brain=abc123" style="width:100%; margin-bottom:16px;">
+                <button id="load-compare-btn" class="primary-btn">Load Friend's Brain</button>
+            </div>
+
+            <div id="compare-loading" class="hidden share-loading">
+                <div class="share-spinner"></div>
+                <p>Analyzing compatibility&hellip;</p>
+            </div>
+
+            <div id="compare-error" class="hidden">
+                <p class="share-error-msg compare-error-msg"></p>
+                <button onclick="setCompareModalState('idle')" class="pill-btn" style="margin-top:12px">Try
+                    again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         COMPARE DASHBOARD (Bottom Right)
+    ══════════════════════════════════════════════════════ -->
+    <div id="compare-dashboard" class="compare-dashboard hidden">
+        <div class="dash-header">
+            <h3>Compatibility</h3>
+            <button class="icon-btn" onclick="exitCompareMode()">&times;</button>
+        </div>
+
+        <div class="compat-meter">
+            <div class="compat-bar">
+                <div id="compat-bar-fill" class="compat-fill"></div>
+            </div>
+            <div id="compat-score" class="compat-score">0%</div>
+        </div>
+
+        <div class="legend-row">
+            <div class="legend-item"><span class="dot dot-both"></span>Both (<span id="legend-both">0</span>)</div>
+            <div class="legend-item"><span class="dot dot-me"></span>You (<span id="legend-me">0</span>)</div>
+            <div class="legend-item"><span class="dot dot-them"></span>Them (<span id="legend-them">0</span>)</div>
+        </div>
+
+        <div class="recs-exchange">
+            <div class="recs-col">
+                <h4>Movies you'd like</h4>
+                <div id="recs-for-me" class="recs-list"></div>
+            </div>
+            <div class="recs-col">
+                <h4>Movies they'd like</h4>
+                <div id="recs-for-them" class="recs-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Firebase SDKs (compat mode — no bundler needed) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="app.js?v=5"></script>
+    <script src="taste.js?v=6"></script>
+    <script src="share.js?v=4"></script>
+    <script src="compare.js?v=4"></script>
+    <script src="views.js?v=5"></script>
+    <script src="galaxy-view.js?v=4"></script>
+    <script src="timeline-view.js?v=5"></script>
+    <script src="constellation-view.js?v=4"></script>
+</body>
+
+</html>
