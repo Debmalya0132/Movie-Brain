@@ -1,16 +1,19 @@
-/* ── Landing Page Styles ── */
+/* ── Landing Page Styles (Monochrome) ── */
 :root {
-    --bg-color: #0a0a0a;
-    --text-1: #ffffff;
-    --text-2: rgba(255, 255, 255, 0.65);
-    --primary: #6366f1;
-    --primary-hover: #4f46e5;
-    --surface-1: rgba(255, 255, 255, 0.03);
-    --surface-2: rgba(255, 255, 255, 0.08);
-    --border: rgba(255, 255, 255, 0.1);
-    --radius-md: 12px;
-    --radius-lg: 24px;
-    --transition: 0.2s ease;
+    --bg-color: #000000;
+    --text-1: #f5f5f7;
+    --text-2: rgba(245, 245, 247, 0.55);
+    --text-3: rgba(245, 245, 247, 0.35);
+    --primary: #f5f5f7;
+    --primary-hover: #ffffff;
+    --surface-1: rgba(18, 18, 18, 0.85);
+    --surface-2: rgba(28, 28, 28, 0.90);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hi: rgba(255, 255, 255, 0.18);
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --blur: blur(24px) saturate(180%);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -20,16 +23,18 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-1);
     line-height: 1.5;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 /* Typography */
 .text-gradient {
-    background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+    /* Subtle monochrome gradient for the hero text */
+    background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.6) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -45,9 +50,9 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 20px 48px;
-    background: rgba(10, 10, 10, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
     position: fixed;
     top: 0;
     left: 0;
@@ -60,9 +65,9 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 1.2rem;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.3px;
 }
 
 .nav-links {
@@ -85,6 +90,7 @@ body {
     border: none;
     text-decoration: none;
     font-family: inherit;
+    letter-spacing: 0.1px;
 }
 
 .btn-lg {
@@ -99,15 +105,15 @@ body {
 }
 
 .btn-primary:hover {
-    background: #e5e5e5;
+    background: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(255,255,255,0.2);
+    box-shadow: 0 8px 24px rgba(255,255,255,0.15);
 }
 
 .btn-secondary {
     background: var(--surface-2);
     color: var(--text-1);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-hi);
 }
 
 .btn-secondary:hover {
@@ -127,12 +133,12 @@ body {
 }
 
 .nav-btn:hover {
-    background: var(--surface-1);
+    background: rgba(255,255,255,0.06);
 }
 
 .nav-btn.primary {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border-hi);
 }
 
 .nav-btn.primary:hover {
@@ -156,7 +162,7 @@ body {
 
 .hero-title {
     font-size: 4.5rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -2px;
     line-height: 1.1;
     margin-bottom: 24px;
@@ -192,7 +198,8 @@ body {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #4f46e5, #a855f7);
+    /* Grayscale gradient for avatars to match monochrome theme */
+    background: linear-gradient(135deg, #444, #222);
     border: 2px solid var(--bg-color);
     margin-left: -10px;
 }
@@ -209,12 +216,12 @@ body {
 }
 
 .glass-panel {
-    background: rgba(20, 20, 20, 0.4);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--surface-1);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6);
     z-index: 10;
 }
 
@@ -237,18 +244,19 @@ body {
     opacity: 0.5;
 }
 
+/* Subtle white light blooms instead of colorful blobs */
 .blob {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
+    filter: blur(90px);
     z-index: 0;
-    opacity: 0.6;
+    opacity: 0.15;
 }
 
 .blob-1 {
     width: 400px;
     height: 400px;
-    background: rgba(99, 102, 241, 0.4);
+    background: rgba(255, 255, 255, 0.4);
     top: -50px;
     right: -50px;
 }
@@ -256,7 +264,7 @@ body {
 .blob-2 {
     width: 300px;
     height: 300px;
-    background: rgba(168, 85, 247, 0.4);
+    background: rgba(200, 200, 200, 0.3);
     bottom: -20px;
     left: -20px;
 }
@@ -272,16 +280,16 @@ body {
 }
 
 .feature-card {
-    background: var(--surface-1);
+    background: rgba(255,255,255,0.03);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     padding: 32px;
-    transition: transform var(--transition), background var(--transition);
+    transition: transform var(--transition), border-color var(--transition);
 }
 
 .feature-card:hover {
     transform: translateY(-5px);
-    background: var(--surface-2);
+    border-color: var(--border-hi);
 }
 
 .feature-icon {
@@ -292,6 +300,7 @@ body {
 .feature-card h3 {
     font-size: 1.2rem;
     margin-bottom: 12px;
+    font-weight: 600;
 }
 
 .feature-card p {
@@ -304,16 +313,16 @@ body {
 .modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.22s ease;
 }
 
 .modal.open {
@@ -322,77 +331,88 @@ body {
 }
 
 .modal-content {
+    background: rgba(14,14,14,0.96);
+    border: 1px solid var(--border-hi);
+    border-radius: var(--radius-lg);
     width: 100%;
     max-width: 420px;
-    padding: 40px;
+    padding: 32px;
     position: relative;
-    transform: translateY(20px);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateY(12px) scale(0.97);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .modal.open .modal-content {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
 
 .close-btn {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: none;
-    border: none;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid var(--border);
     color: var(--text-2);
-    font-size: 1.5rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: color var(--transition);
+    transition: all var(--transition);
 }
 
-.close-btn:hover { color: var(--text-1); }
+.close-btn:hover { 
+    background: rgba(255,255,255,0.14);
+    color: var(--text-1); 
+}
 
 .modal-content h2 {
-    font-size: 1.8rem;
-    margin-bottom: 8px;
-    letter-spacing: -0.5px;
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+    font-weight: 600;
 }
 
 .auth-form {
-    margin-top: 32px;
+    margin-top: 28px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .input-group label {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 500;
     color: var(--text-2);
 }
 
 .input-group input {
-    background: rgba(0,0,0,0.5);
-    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-hi);
     border-radius: 8px;
-    padding: 12px 16px;
+    padding: 10px 14px;
     color: var(--text-1);
     font-family: inherit;
-    font-size: 1rem;
+    font-size: 0.95rem;
     transition: border-color var(--transition);
 }
 
 .input-group input:focus {
     outline: none;
-    border-color: var(--primary);
+    border-color: rgba(255,255,255,0.4);
 }
 
 .auth-switch {
     margin-top: 24px;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text-2);
 }
 
@@ -406,12 +426,10 @@ body {
 .auth-switch a:hover { text-decoration: underline; }
 
 .error-msg {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    padding: 10px 14px;
-    border-radius: 8px;
+    color: rgba(255,100,100,0.85);
     font-size: 0.85rem;
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    text-align: center;
+    margin-top: 4px;
 }
 
 .hidden { display: none !important; }
