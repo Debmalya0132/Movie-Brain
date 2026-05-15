@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log("🧠 Movie Brain V3 Loaded!");
     initThreeJS();
     initEventListeners();
-    loadFromLocalStorage();
+    initializeData();
     await setupAuthAndLogout();
     animate();
 });
@@ -317,20 +317,24 @@ async function toggleWatchedContent(e) {
         item.classList.remove('added');
         if (checkbox) checkbox.checked = false;
         removeNodeFromScene(id);
+        DB.removeWatchedItem(id);
     } else {
         // Add to watched
+        item.style.opacity = '0.5';
         try {
             const details = await fetchContentDetails(id, type);
             watchedContent.push(details);
             item.classList.add('added');
             if (checkbox) checkbox.checked = true;
+            item.style.opacity = '';
             addNodeToScene(details);
+            DB.addWatchedItem(details);
         } catch (error) {
+            item.style.opacity = '';
             console.error('Error adding content:', error);
         }
     }
 
-    saveToLocalStorage();
     updateStats();
     updateConnections();
 }
@@ -723,7 +727,7 @@ async function addRecommendation(e) {
         item.classList.remove('added');
         if (meta) meta.textContent = 'Click to add';
         removeNodeFromScene(id);
-        saveToLocalStorage();
+        DB.removeWatchedItem(id);
         updateStats();
         updateConnections();
         return;
@@ -738,7 +742,7 @@ async function addRecommendation(e) {
         if (meta) meta.textContent = `${details.year} \u00b7 Click to remove`;
         item.style.opacity = '';
         addNodeToScene(details);
-        saveToLocalStorage();
+        DB.addWatchedItem(details);
         updateStats();
         updateConnections();
     } catch (error) {
@@ -757,30 +761,19 @@ function updateStats() {
     document.getElementById('connection-count').textContent = connections.length;
 }
 
-// Local Storage
-function saveToLocalStorage() {
-    localStorage.setItem('movieBrainData', JSON.stringify(watchedContent));
-}
+// Data Initialization
+async function initializeData() {
+    watchedContent = await DB.getWatchedContent();
+    
+    // Clear scene and rebuild
+    nodes.forEach(n => scene.remove(n.mesh));
+    nodes = [];
+    connections.forEach(c => scene.remove(c.line));
+    connections = [];
 
-function loadFromLocalStorage() {
-    const saved = localStorage.getItem('movieBrainData');
-    if (saved) {
-        watchedContent = JSON.parse(saved);
-
-        // Backfill dateAdded for entries that pre-date this feature
-        let needsSave = false;
-        watchedContent.forEach(c => {
-            if (!c.dateAdded) {
-                c.dateAdded = new Date().toISOString();
-                needsSave = true;
-            }
-        });
-        if (needsSave) saveToLocalStorage();
-
-        watchedContent.forEach(content => addNodeToScene(content));
-        updateStats();
-        updateConnections();
-    }
+    watchedContent.forEach(content => addNodeToScene(content));
+    updateStats();
+    updateConnections();
 }
 
 // Utilities

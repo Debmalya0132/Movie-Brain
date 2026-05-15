@@ -29,7 +29,6 @@
             </div>
 
             <div class="header-right">
-                <button id="logout-btn" class="header-btn">Log Out</button>
                 <button id="compare-brain-btn" class="header-btn" aria-label="Compare Brains">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -135,6 +134,7 @@
                 <span class="stat-value" id="connection-count">0</span>
                 <span class="stat-label">Connections</span>
             </div>
+            <button id="logout-btn" class="header-btn logout-stat-btn">Log Out</button>
         </div>
 
     </div><!-- /#app -->
@@ -150,7 +150,7 @@
         <div class="drawer-header">
             <div>
                 <h2 class="drawer-title">AI Taste Profile</h2>
-                <p class="drawer-sub">Powered by Gemini 2.5 Flash · Free</p>
+                <p class="drawer-sub">Powered by Gemini 2.5 Flash</p>
             </div>
             <button id="close-taste" class="close-btn" aria-label="Close">&times;</button>
         </div>
@@ -342,6 +342,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
+    <script src="js/database.js"></script>
     <!-- Firebase SDKs (compat mode — no bundler needed) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>

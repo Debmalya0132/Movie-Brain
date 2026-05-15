@@ -12,9 +12,6 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-brand">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
-            </svg>
             Movie Brain
         </div>
         <div class="nav-links">
@@ -31,28 +28,13 @@
             
             <div class="hero-cta">
                 <button id="hero-signup-btn" class="btn btn-lg btn-primary">Start Building Now</button>
-                <a href="dashboard.html" class="btn btn-lg btn-secondary">Try Demo (No Save)</a>
-            </div>
-            
-            <div class="social-proof">
-                <div class="avatars">
-                    <div class="avatar"></div><div class="avatar"></div><div class="avatar"></div>
-                </div>
-                <p>Join over <strong>1,000+</strong> film lovers mapping their taste.</p>
+                <a href="dashboard.html" class="btn btn-lg btn-secondary">Try Demo</a>
             </div>
         </div>
 
         <div class="hero-visual">
-            <div class="glass-panel">
-                <!-- We could put an image or video of the brain here -->
-                <div class="mockup-placeholder">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round">
-                        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-                    </svg>
-                    <p>Interactive 3D Experience</p>
-                </div>
+            <div id="landing-canvas-container">
+                <canvas id="landing-brain-canvas"></canvas>
             </div>
             <!-- Decorative blur blobs -->
             <div class="blob blob-1"></div>
@@ -60,20 +42,19 @@
         </div>
     </section>
 
-    <!-- Features Section -->
     <section class="features">
         <div class="feature-card">
-            <div class="feature-icon">🌌</div>
+            <div class="feature-icon"></div>
             <h3>4 Visualization Modes</h3>
             <p>Explore your taste through Brain, Galaxy, Timeline, and Constellation modes.</p>
         </div>
         <div class="feature-card">
-            <div class="feature-icon">🤖</div>
+            <div class="feature-icon"></div>
             <h3>AI Taste Analysis</h3>
             <p>Let Google Gemini analyze your viewing history to reveal your cinematic archetype.</p>
         </div>
         <div class="feature-card">
-            <div class="feature-icon">🤝</div>
+            <div class="feature-icon"></div>
             <h3>Compare with Friends</h3>
             <p>Share your brain and overlay it with a friend's to see exactly how compatible you are.</p>
         </div>
@@ -106,7 +87,9 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="js/supabase-client.js"></script>
+    <script src="js/landing-visual.js"></script>
     <script src="js/landing.js"></script>
 </body>
 </html>

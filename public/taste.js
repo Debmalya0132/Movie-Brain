@@ -11,6 +11,7 @@ const PROFILE_KEY     = 'movieBrainProfile';  // localStorage key for persisted 
 // ── State ─────────────────────────────────────────────────────────────────────
 let chatHistory = [];   // [{role, content}]
 let profileContext = ''; // built after generation, reused in chat
+let currentProfileKey = PROFILE_KEY; // dynamic key based on user session
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,7 +36,7 @@ function initDrawer() {
     });
 }
 
-function openDrawer() {
+async function openDrawer() {
     const drawer   = document.getElementById('taste-drawer');
     const backdrop = document.getElementById('taste-backdrop');
 
@@ -47,8 +48,9 @@ function openDrawer() {
         backdrop.classList.add('open');
     }));
 
+    currentProfileKey = await getProfileKey();
     refreshDrawerState();
-    restoreProfile(); // ← load last saved profile if available
+    await restoreProfile(); // ← load last saved profile if available
 }
 
 function closeDrawer() {
@@ -83,7 +85,7 @@ function refreshDrawerState() {
 
     // Show stale nudge if 5+ movies added since last analysis
     try {
-        const meta = JSON.parse(localStorage.getItem(PROFILE_KEY + '_meta') || '{}');
+        const meta = JSON.parse(localStorage.getItem(currentProfileKey + '_meta') || '{}');
         if (meta.count && count >= meta.count + 5 && staleBanner) {
             staleBanner.querySelector('.stale-count').textContent = count - meta.count;
             staleBanner.classList.remove('hidden');
@@ -115,8 +117,8 @@ function buildWatchedSummary() {
 }
 
 // ── Restore last saved profile on drawer open ─────────────────────────────────
-function restoreProfile() {
-    const saved = localStorage.getItem(PROFILE_KEY);
+async function restoreProfile() {
+    const saved = localStorage.getItem(currentProfileKey);
     if (!saved) return;
 
     // Only restore if sections are empty (fresh open, not after Re-analyze)
@@ -132,6 +134,17 @@ function restoreProfile() {
     } catch (e) {
         // silently skip corrupt data
     }
+}
+
+async function getProfileKey() {
+    if (!window.supabaseClient) return PROFILE_KEY;
+    try {
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        if (session && session.user) {
+            return `${PROFILE_KEY}_${session.user.id}`;
+        }
+    } catch (e) {}
+    return PROFILE_KEY;
 }
 
 // ── Generate profile ─────────────────────────────────────────────────────────
@@ -187,15 +200,15 @@ Return ONLY valid JSON in this exact shape, no markdown fences:
 
         renderProfile(parsed);
         // Persist profile + movie count at time of analysis
-        localStorage.setItem(PROFILE_KEY, JSON.stringify(parsed));
-        localStorage.setItem(PROFILE_KEY + '_meta', JSON.stringify({ count, ts: Date.now() }));
+        localStorage.setItem(currentProfileKey, JSON.stringify(parsed));
+        localStorage.setItem(currentProfileKey + '_meta', JSON.stringify({ count, ts: Date.now() }));
 
         profileContext = `The user's watched list:\n${watched}\n\nTheir taste profile:\n${JSON.stringify(parsed, null, 2)}`;
         chatHistory = [];
         initChatSection();
 
     } catch (err) {
-        sections.innerHTML = `<div class="profile-error">⚠️ ${err.message}</div>`;
+        sections.innerHTML = `<div class="profile-error">${err.message}</div>`;
     } finally {
         btn.disabled = false;
         btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Re-analyze`;
