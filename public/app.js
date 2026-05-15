@@ -11,13 +11,41 @@ let selectedNode = null;
 let ripples = []; // { mesh, connection, progress, speed }
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log("🧠 Movie Brain V3 Loaded!");
     initThreeJS();
     initEventListeners();
     loadFromLocalStorage();
+    await setupAuthAndLogout();
     animate();
 });
+
+async function setupAuthAndLogout() {
+    const logoutBtn = document.getElementById('logout-btn');
+    if (!logoutBtn || !window.supabaseClient) return;
+
+    const { data: { session } } = await window.supabaseClient.auth.getSession();
+    
+    // If not in a shared brain (which ?brain handles separately)
+    const isShared = new URLSearchParams(window.location.search).has('brain');
+    
+    if (session) {
+        logoutBtn.textContent = 'Log Out';
+    } else if (!isShared) {
+        logoutBtn.textContent = 'Exit Demo';
+    } else {
+        // If viewing shared brain and not logged in, they can still go home
+        logoutBtn.textContent = 'Create Yours';
+    }
+
+    logoutBtn.addEventListener('click', async () => {
+        if (session) {
+            logoutBtn.textContent = 'Logging out...';
+            await window.supabaseClient.auth.signOut();
+        }
+        window.location.href = '/';
+    });
+}
 
 // Three.js Initialization
 function initThreeJS() {
